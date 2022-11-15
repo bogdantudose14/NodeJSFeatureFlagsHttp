@@ -39,7 +39,7 @@ let logger = configcat.createConsoleLogger(3);
 
 // Initialize the client using your SDK key
 let configCatClient = configcat.createClientWithAutoPoll(
-  '37zaCKxtxU2MtekOuC5PAw/KWWWsZ2r3kqr5wlcuYFZEA', // <-- This is the actual SDK Key for your Test Environment environment
+  'INSERT YOUR SDK KEY', // <-- This is the actual SDK Key for your Test Environment environment
   {
     pollIntervalSeconds: 5, // how often to update the variable value from the ConfigCat server
     logger: logger, // use the logger created previously
