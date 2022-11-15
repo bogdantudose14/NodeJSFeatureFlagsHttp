@@ -1,7 +1,7 @@
 {
   "name": "nodejsfeatureflags",
   "version": "1.0.0",
-  "description": "Sample NodeJs App using Express for exemplifying Feature Flags",
+  "description": "Sample NodeJs App using 'http' module for exemplifying Feature Flags",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

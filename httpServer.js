@@ -1,12 +1,9 @@
 import configcat from 'configcat-node';
 import http from 'http';
 import { router } from './router.js';
-// import express from 'express';
-// import cors from 'cors';
-// import bodyParser from 'body-parser';
 
 router.register('GET/serverStatus', (req, res) => {
-  let expressServerReponseRight = getExpressServerResponseRight().then(
+  let httpServerReponseRight = getHttpServerResponseRight().then(
     (result) => {
       return result;
     },
@@ -15,29 +12,18 @@ router.register('GET/serverStatus', (req, res) => {
     }
   );
 
-  expressServerReponseRight.then(function (result) {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(
-      JSON.stringify({
-        message:
-          result === true
-            ? 'I am allowed to talk to you'
-            : 'I do not talk to strangers for the moment',
-      })
-    );
+  httpServerReponseRight.then(function (result) {
+    if (result) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
+          message: 'I am allowed to talk to you',
+        })
+      );
+    } else {
+      res.writeHead(503).end();
+    }
   });
-});
-
-router.register('POST/product', (req, res) => {
-  res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.end(
-    JSON.stringify({
-      product: {
-        name: 'Product Name',
-        price: 100,
-      },
-    })
-  );
 });
 
 const server = http.createServer((req, res) => {
@@ -47,23 +33,27 @@ const server = http.createServer((req, res) => {
 
 // #region ConfigCat Feature Flags Demo
 
-let logger = configcat.createConsoleLogger(3); // Set the log level to INFO to track how your feature flags were evaluated. When moving to production, you can remove this line to avoid too detailed logging.
+// Set the log level to INFO to track how your feature flags were evaluated.
 
+let logger = configcat.createConsoleLogger(3);
+
+// Initialize the client using your SDK key
 let configCatClient = configcat.createClientWithAutoPoll(
   '37zaCKxtxU2MtekOuC5PAw/KWWWsZ2r3kqr5wlcuYFZEA', // <-- This is the actual SDK Key for your Test Environment environment
   {
-    pollIntervalSeconds: 5,
-    logger: logger,
+    pollIntervalSeconds: 5, // how often to update the variable value from the ConfigCat server
+    logger: logger, // use the logger created previously
   }
 );
 
-async function getExpressServerResponseRight() {
-  const expressServerResponse = await configCatClient.getValueAsync(
-    'expressServerResponse',
+// asynchronous method for getting the true/false value of the flag
+async function getHttpServerResponseRight() {
+  const httpServerResponse = await configCatClient.getValueAsync(
+    'httpserveractive',
     false
   );
 
-  return expressServerResponse;
+  return httpServerResponse;
 }
 
 // #endregion
